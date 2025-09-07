@@ -5,7 +5,7 @@ export interface User {
 	_id: string;
 	name: string;
 	email: string;
-	role: "patient" | "doctor" | "admin";
+	role: "patient" | "doctor";
 	phone: string;
 	address: string;
 	profilePicture: string;

@@ -7,7 +7,19 @@ import Register from "./pages/Register";
 import Doctors from "./pages/Doctors";
 import DoctorProfile from "./pages/DoctorProfile";
 import Profile from "./pages/Profile";
-import "./App.css";
+import AppointmentForm from "./pages/AppointmentForm";
+import AppointmentList from "./pages/AppointmentList";
+import NotificationList from "./pages/NotificationList";
+import Reminder from "./pages/Reminder";
+import LiveChat from "./pages/LiveChat";
+import HealthTips from "./pages/HealthTips";
+import CreateHealthTip from "./pages/CreateHealthTip";
+import PaymentPage from "./pages/Payment";
+import Rating from "./pages/Rating";
+import RatingDashboard from "./pages/RatingDashboard";
+import MedicalHistory from "./pages/MedicalHistory";
+import AdminDoctors from "./pages/AdminDoctors";
+import "./index.css";
 
 function App() {
 	return (
@@ -21,6 +33,36 @@ function App() {
 					<Route path="/doctors" element={<Doctors />} />
 					<Route path="/doctors/:id" element={<DoctorProfile />} />
 					<Route path="/profile" element={<Profile />} />
+					<Route
+						path="/book-appointment/:doctorId"
+						element={<AppointmentForm />}
+					/>
+					<Route path="/appointments" element={<AppointmentList />} />
+					<Route
+						path="/notifications"
+						element={<NotificationList />}
+					/>
+					<Route path="/reminders" element={<Reminder />} />
+					<Route
+						path="/livechat/:appointmentId"
+						element={<LiveChat />}
+					/>
+					<Route path="/healthtips" element={<HealthTips />} />
+					<Route
+						path="/create-healthtip"
+						element={<CreateHealthTip />}
+					/>
+					<Route
+						path="/payment/:appointmentId"
+						element={<PaymentPage />}
+					/>
+					<Route path="/rating/:appointmentId" element={<Rating />} />
+					<Route path="/ratings" element={<RatingDashboard />} />
+					<Route
+						path="/medical-history"
+						element={<MedicalHistory />}
+					/>
+					<Route path="/admin/doctors" element={<AdminDoctors />} />
 				</Routes>
 				<Toaster
 					position="top-right"

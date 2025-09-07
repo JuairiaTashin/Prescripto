@@ -6,8 +6,10 @@ import {
 	updateProfile,
 	getDoctors,
 	getDoctorById,
+	adminCreateDoctor,
+	adminDeleteDoctor,
 } from "../controllers/userController";
-import { authenticateToken } from "../middleware/auth";
+import { authenticateToken, authorizeRole } from "../middleware/auth";
 import { upload } from "../middleware/upload";
 
 const router = Router();
@@ -23,5 +25,19 @@ router.put(
 );
 router.get("/doctors", getDoctors);
 router.get("/doctors/:id", getDoctorById);
+// Admin routes for managing doctors
+router.post(
+	"/admin/doctors",
+	authenticateToken,
+	authorizeRole("admin"),
+	upload.single("profilePicture"),
+	adminCreateDoctor
+);
+router.delete(
+	"/admin/doctors/:id",
+	authenticateToken,
+	authorizeRole("admin"),
+	adminDeleteDoctor
+);
 
 export default router;

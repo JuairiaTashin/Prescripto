@@ -30,6 +30,38 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 			availableHours,
 		} = req.body;
 
+		const isValidEmail = (e?: string) =>
+			!!e && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+		if (!name || !email || !password || !role || !phone || !address) {
+			res.status(400).json({
+				success: false,
+				message: "Missing required fields",
+			});
+			return;
+		}
+
+		if (!isValidEmail(email)) {
+			res.status(400).json({
+				success: false,
+				message: "Invalid email address",
+			});
+			return;
+		}
+
+		if (typeof password !== "string" || password.length < 6) {
+			res.status(400).json({
+				success: false,
+				message: "Password must be at least 6 characters",
+			});
+			return;
+		}
+
+		const allowedRoles = ["patient", "doctor", "admin"];
+		if (!allowedRoles.includes(role)) {
+			res.status(400).json({ success: false, message: "Invalid role" });
+			return;
+		}
 		if (!req.file) {
 			res.status(400).json({
 				success: false,
@@ -48,6 +80,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		if (role === "doctor") {
+			if (
+				!specialty ||
+				!experience ||
+				!degree ||
+				!bmdc ||
+				!consultationFee
+			) {
+				res.status(400).json({
+					success: false,
+					message: "Missing doctor specific fields",
+				});
+				return;
+			}
+
 			const existingDoctor = await User.findOne({ bmdc });
 			if (existingDoctor) {
 				res.status(400).json({
@@ -344,6 +390,173 @@ export const getDoctorById = async (
 		res.status(500).json({
 			success: false,
 			message: "Failed to get doctor",
+			error: error.message,
+		});
+	}
+};
+
+export const adminCreateDoctor = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const {
+			name,
+			email,
+			password,
+			phone,
+			address,
+			dateOfBirth,
+			gender,
+			specialty,
+			experience,
+			degree,
+			bmdc,
+			consultationFee,
+			bio,
+			availableHours,
+		} = req.body;
+
+		const isValidEmail = (e?: string) =>
+			!!e && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+		if (
+			!name ||
+			!email ||
+			!password ||
+			!phone ||
+			!address ||
+			!specialty ||
+			!experience ||
+			!degree ||
+			!bmdc ||
+			!consultationFee
+		) {
+			res.status(400).json({
+				success: false,
+				message: "Missing required fields for doctor",
+			});
+			return;
+		}
+
+		if (!isValidEmail(email)) {
+			res.status(400).json({
+				success: false,
+				message: "Invalid email address",
+			});
+			return;
+		}
+
+		if (typeof password !== "string" || password.length < 6) {
+			res.status(400).json({
+				success: false,
+				message: "Password must be at least 6 characters",
+			});
+			return;
+		}
+
+		if (isNaN(Number(experience)) || isNaN(Number(consultationFee))) {
+			res.status(400).json({
+				success: false,
+				message: "Experience and consultationFee must be numbers",
+			});
+			return;
+		}
+
+		if (!req.file) {
+			res.status(400).json({
+				success: false,
+				message: "Profile picture is required",
+			});
+			return;
+		}
+
+		const existingUser = await User.findOne({ email });
+		if (existingUser) {
+			res.status(400).json({
+				success: false,
+				message: "User already exists with this email",
+			});
+			return;
+		}
+
+		const existingDoctor = await User.findOne({ bmdc });
+		if (existingDoctor) {
+			res.status(400).json({
+				success: false,
+				message: "Doctor already exists with this BMDC number",
+			});
+			return;
+		}
+
+		const saltRounds = 12;
+		const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+		const userData: any = {
+			name,
+			email,
+			password: hashedPassword,
+			role: "doctor",
+			phone,
+			address,
+			profilePicture: req.file.path,
+			dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+			gender,
+			specialty,
+			experience: experience ? parseInt(experience) : undefined,
+			degree,
+			bmdc,
+			consultationFee: consultationFee
+				? parseInt(consultationFee)
+				: undefined,
+			bio,
+			availableHours: availableHours
+				? JSON.parse(availableHours)
+				: undefined,
+		};
+
+		const user = new User(userData);
+		await user.save();
+
+		const userResponse: any = user.toObject();
+		delete userResponse.password;
+
+		res.status(201).json({
+			success: true,
+			message: "Doctor created successfully",
+			data: userResponse,
+		});
+	} catch (error: any) {
+		res.status(500).json({
+			success: false,
+			message: "Failed to create doctor",
+			error: error.message,
+		});
+	}
+};
+
+export const adminDeleteDoctor = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const { id } = req.params;
+		const doctor = await User.findOneAndDelete({ _id: id, role: "doctor" });
+		if (!doctor) {
+			res.status(404).json({
+				success: false,
+				message: "Doctor not found",
+			});
+			return;
+		}
+		res.status(200).json({
+			success: true,
+			message: "Doctor deleted permanently",
+		});
+	} catch (error: any) {
+		res.status(500).json({
+			success: false,
+			message: "Failed to delete doctor",
 			error: error.message,
 		});
 	}
