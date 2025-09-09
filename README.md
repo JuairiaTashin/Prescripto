@@ -16,18 +16,29 @@ Features:
 
 
 The Project was developed using the following:
+
 Backend stack:
+
 Language: TypeScript 
+
 Framework: Express.js
+
 Database: MongoDB
+
 ODM (Object Data Modeling): Mongoose
+
 Architecture pattern: MVC
 
 Frontend stack:
-Language: TypeScript 
+
+Language: TypeScript
+
 Library: React.js 
+
 Routing: react-router-dom 
+
 UI/Styling: TailwindCSS 
+
 Icons: react-icons/fi 
 Notifications: react-hot-toast
 
