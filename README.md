@@ -1,5 +1,5 @@
 # Prescripto
-Connect with Bangladesh's finest doctors and get quality healthcare from the comfort of your home
+Connect with World's finest doctors and get quality healthcare from the comfort of your home.
 
 Features:
 1. User Authentication: Secure login and registration for patients, doctors, and admins.  
