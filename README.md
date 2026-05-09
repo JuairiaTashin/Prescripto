@@ -1,7 +1,7 @@
 # Prescripto
-Connect with Bangladesh's finest doctors and get quality healthcare from the comfort of your home
+Connect with world's finest doctors and get quality healthcare from the comfort of your home
 
-Features:
+## Features:
 1. User Authentication: Secure login and registration for patients, doctors, and admins.  
 2. Doctor Directory: Browse doctor profiles by specialty.  
 3. Appointment Booking: Book appointments with real-time available slots.  
@@ -15,7 +15,7 @@ Features:
 11. Admin Dashboard: Admins can add or remove doctors and oversee the entire system .
 
 
-The Project was developed using the following:
+## The Project was developed using the following:
 
 Backend stack:
 
